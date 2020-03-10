@@ -94,11 +94,28 @@ if($result->num_rows === 0) {
 	return [];
 }
 
-while($row = $result->fetch_assoc()) {
-	$final_array[$types[$row['hnccp_type']]][$row['aszcp_id']] = $row['afkvx_name'];
+    while($row = $result->fetch_assoc()) {
+    	$final_array[$types[$row['hnccp_type']]][$row['aszcp_id']] = $row['afkvx_name'];
+    }
+
+    return $final_array;
 }
 
-return $final_array;
+function get_user_details($sql_conn,$user_id) {
+
+$stmt = $sql_conn->prepare("SELECT * FROM `cqeiq_users` WHERE `rqipo_id` = ?");
+
+$stmt->bind_param("s",$user_id);
+$stmt->execute();
+
+$result = $stmt->get_result();
+$output = [];
+
+while($row = $result->fetch_assoc()) {
+        $output['current_balance'] = $row['etnvc_current_bal'];
+    }
+
+return $output;
 }
 
 ?>

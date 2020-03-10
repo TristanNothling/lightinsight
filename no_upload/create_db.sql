@@ -79,7 +79,8 @@ INSERT INTO `jwrpa_categories` (`aszcp_id`, `afkvx_name`, `hnccp_type`) VALUES
 DROP TABLE IF EXISTS `nnbca_recurring_transactions`;
 CREATE TABLE `nnbca_recurring_transactions` (
   `qwepo_id` int(8) unsigned NOT NULL,
-  `dbfxv_type` int(2) unsigned NOT NULL COMMENT '1:Certain date every month, 2:Every x days',
+  `bsdjw_repeat_type` int(2) unsigned NOT NULL COMMENT '1:Certain date every month, 2:Every x days',
+  `dbfxv_type` int(2) unsigned NOT NULL,
   `etrhc_repeat` int(4) unsigned NOT NULL COMMENT 'Either the date of month, or the amount of days per repeating',
   `xcvbl_active` tinyint(1) unsigned NOT NULL,
   `egbvv_start_date` date NOT NULL,

@@ -75,7 +75,7 @@ if ($_POST['method'] === 'create') {
     	die();
 	}
 
-	$stmt = $sql_conn->prepare("INSERT INTO plzna_transactions (askdl_value_sig,vrbtn_belongs_to,wqeok_description,jwecv_date,haasx_category,jkqwe_type,oqwaa_enabled) VALUES (?,?,?,?,?,?,?)");
+	$stmt = $sql_conn->prepare("INSERT INTO `nnbca_recurring_transactions` (tiyrh_value_sig,egtrr_belongs_to,jwena_description,egbvv_start_date,hatrx_category,dbfxv_type,bsdjw_repeat_type,oqwaa_enabled) VALUES (?,?,?,?,?,?,?)");
 	$enabled = 1;
 	/*insert into recurring transactions*/
 

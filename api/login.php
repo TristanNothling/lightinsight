@@ -98,7 +98,7 @@ if ($result->num_rows === 1) {
 	$submitted_password = hash('sha512', $submitted_password . $salt);
 	/*	}*/
 
-	if (strtoupper($submitted_password) == $password_hash){
+	if ($submitted_password == $password_hash){
 
 		/*clear previous token*/
 

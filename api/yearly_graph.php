@@ -61,7 +61,8 @@ while($row = $result->fetch_assoc()) {
 
 
 $current_date = new DateTime();
-$current_balance = 126;
+$user_details = get_user_details($sql_conn,$_SESSION['logged_user_id']);
+$current_balance = $user_details['current_balance'];
 
 
 $date_array[$current_date->format('d-m-Y')] = $current_balance;
@@ -96,11 +97,10 @@ while ($current_date->format('Y') == $year_requested)
 
 $current_date = new DateTime();
 $current_date ->sub(new DateInterval('P1D'));
-$current_balance = 126;
+$current_balance = $user_details['current_balance'];
 
 while ($current_date->format('Y') == $year_requested)
 {
-
 
 	if (isset($transactions[$current_date->format('d-m-Y')] ))
 		{
