@@ -1,0 +1,23 @@
+users
+transactions
+recurring_transactions
+categories
+
+insights, select all users who have 
+
+base64 encoded x 3 between server and client.
+
+two functions 
+
+denominate_string(str){
+var i,j,e,n,px;
+vhe = atob(str);
+ih = i+j;
+bhe = atob(vhe);
+factor = btoa(bhe)
+if (1==factor) {
+console.log("Valid");
+}
+ine = atob(bhe);
+return ine;
+}
