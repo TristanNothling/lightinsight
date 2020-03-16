@@ -95,6 +95,10 @@ if($result->num_rows === 0) {
 
     while($row = $result->fetch_assoc()) {
     	$final_array[$types[$row['hnccp_type']]][$row['aszcp_id']] = $row['afkvx_name'];
+
+    	/* Example Output */
+    	/* in => 01 => Salary */
+    	/* out => 02 => General */
     }
 
     return $final_array;
@@ -112,6 +116,7 @@ $output = [];
 
 while($row = $result->fetch_assoc()) {
         $output['current_balance'] = $row['etnvc_current_bal'];
+        /*add extra variables in scope here*/
     }
 
 return $output;

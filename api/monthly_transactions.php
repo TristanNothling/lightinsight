@@ -42,7 +42,8 @@ while($row = $result->fetch_assoc()) {
   $real_description = decrypt(base64_decode($row['wqeok_description']),$decryption_key);
   $real_date = date("d-m-Y", strtotime($row['jwecv_date']));  
   $real_type = $row['jkqwe_type'];
-  $final_output['data'][] = ['type'=>$real_type,'description'=>$real_description,'value'=>$real_amount,'date'=>$real_date]; 
+  $real_id = $row['zeqwe_id'];
+  $final_output['data'][] = ['id'=>$real_id,'type'=>$real_type,'description'=>$real_description,'value'=>$real_amount,'date'=>$real_date]; 
 }
 
 

@@ -477,7 +477,7 @@ $global_categories = get_categories($sql_conn);
 	}
 
 	tr{
-		height:48px;
+		height:56px;
 	}
 
 	.green_row{
@@ -494,6 +494,40 @@ $global_categories = get_categories($sql_conn);
 		}
 	}
 
+
+	.editTransaction:hover{
+		cursor: pointer;
+	}
+
+	.contextMenu{
+		width:200px;
+		min-height:64px;
+		background:white;
+		position:absolute;
+		z-index: 500;
+		display:none;
+	box-shadow: 3px 5px 6px -1px #868686;
+
+	}
+
+	.openMenu{
+		display:block;
+	}
+
+	.menuItem{
+		height:56px;
+		background:white;
+		line-height: 56px;
+		padding-left: 23px;
+		box-sizing: border-box;
+		color:#333;
+		font-family: 'Oxygen', sans-serif;
+	}
+
+	.menuItem:hover{
+		background:#ececec;
+	}
+
 	</style>
 
 
@@ -501,19 +535,9 @@ $global_categories = get_categories($sql_conn);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 </head>
+
+
 
 <script src="js/apexCharts.js"></script>
 <script src="dp/js/datepicker.min.js"></script>
@@ -524,6 +548,10 @@ $global_categories = get_categories($sql_conn);
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
 <body>
+
+
+
+
 <div id="surrounding_container">
 
 	<div id="headerBar">
@@ -544,6 +572,11 @@ $global_categories = get_categories($sql_conn);
 	</div>
 
 	<div class="oneSection" id="transactions_section">
+
+						<div class="contextMenu">
+	<div class="menuItem edit">Edit</div>
+	<div class="menuItem delete">Delete</div>
+</div>
 		
 		<div class="loader loader--style2" style="display:none;">
 			<img src="purple_loader.svg">
@@ -625,6 +658,8 @@ $global_categories = get_categories($sql_conn);
 		</div>
 
 		<div class="panel" id="monthly_transactions" style="text-align:center;font-family: 'Oxygen', sans-serif;">
+
+
 
 			<style>
 				#monthly_transactions tr:hover{
@@ -714,7 +749,7 @@ $global_categories = get_categories($sql_conn);
 			</span>
 
 			<table id="transaction_table">
-				<thead><tr><th>Description</th><th>&pound;</th><th>Date</th><th>Type</th></tr></thhead><tbody></table>
+				<thead><tr><th>Description</th><th>&pound;</th><th>Date</th><th>More</th></tr></thhead><tbody></table>
 			
 		</div>
 
@@ -793,11 +828,11 @@ var options = {
   	series: 
   		[{
     	name: 'Balance',
-    	data: [32,43,54,53,136,64,246,245,264,223,134]
+    	data: []
   		}],
   	xaxis: 
   		{
-    	categories: [10,11,12,13,14,15,16,17,18,19,20]
+    	categories: []
   		},
 	stroke:
 		{
@@ -830,6 +865,38 @@ var options = {
 var chart = new ApexCharts(document.querySelector("#chart"), options);
 chart.render();
 
+$(document).mouseup(function(e) 
+{
+    var menu = $('.contextMenu');
+    var box = $('.editTransaction');
+
+    // if the target of the click isn't the container nor a descendant of the container
+    if (!menu.is(e.target) && menu.has(e.target).length === 0) 
+    {
+    	if (!box.is(e.target) && box.has(e.target).length === 0) {
+        	menu.removeClass('openMenu');
+        }
+    }
+});
+
+
+
+function create_row(fetched_data){
+
+	var the_row = '';
+	var green = fetched_data['type'];
+
+	if (green===0){
+	the_row+='<tr class="red_row">';
+	}else{
+	the_row+='<tr class="green_row">';
+	}
+
+	the_row+='<td>'+fetched_data.description+'</td><td>'+fetched_data.value+'</td><td>'+fetched_data.date+'</td><td class="editTransaction" data_tid="'+fetched_data.id+'""></td></tr>';
+
+	return the_row;
+
+}
 
 function populate_transactions(month,year){
 	$.ajax({
@@ -842,17 +909,28 @@ function populate_transactions(month,year){
 		
 		if (result_object.result === "success")
 		{
-			$('#transaction_table').html('<thead><tr><th>Value</th><th>Date</th><th>Type</th></tr></thhead><tbody>');
+			$('#transaction_table').html('<thead><tr><th>Value</th><th>Date</th><th>More</th></tr></thhead><tbody>');
 			for (var i = 0; i < result_object['data'].length; i++){
 
-				var green = result_object['data'][i]['type'];
-				if (green===0){
-    				$('#transaction_table').append('<tr class="red_row"><td>'+result_object['data'][i].description+'</td><td>'+result_object['data'][i].value+'</td><td>'+result_object['data'][i].date+'</td><td> - </td></tr>');
-				}else{
-		    		$('#transaction_table').append('<tr class="green_row"><td>'+result_object['data'][i].description+'</td><td>'+result_object['data'][i].value+'</td><td>'+result_object['data'][i].date+'</td><td> + </td></tr>');	
-				}
+				var next_row = create_row(result_object['data'][i]);
+				$('#transaction_table').append(next_row);
+
 			}
+
 			$('#transaction_table').append('</tbody>');
+
+			$('.editTransaction').click(function(e){
+
+				$('.contextMenu').addClass('openMenu');
+				$('.contextMenu').attr('data_tid',$(this).attr('data_tid'));
+				var offset = $(this).offset();
+				var scrollX = $('#transactions_section').scrollTop();
+				console.log(scrollX);
+				$('.contextMenu').css('left', (offset.left - 200) + 'px');
+				$('.contextMenu').css('top', (offset.top - 62 +scrollX) +'px');
+
+			})
+
 			table.destroy()
 			table = $('#transaction_table').DataTable({"paging": false});
 			
@@ -865,7 +943,6 @@ function populate_transactions(month,year){
 	});
 
 }
-
 
 $('#date_picker').datepicker({
     language: 'en',
@@ -915,6 +992,7 @@ $("#add_transaction").submit(function(e) {
 			if (result_object.result === "success")
 			{
 				transaction_type = 0;
+
 				$('.loader2').hide();
 				var date_copy = document.getElementById('date_picker').value 
 				$('#add_transaction').trigger("reset");
@@ -922,6 +1000,10 @@ $("#add_transaction").submit(function(e) {
 				$('#amount').removeClass('red_row');
 				$('#amount').removeClass('green_row');
 				$('#amount').addClass('red_row');
+
+				$('.custom-select-cats').hide();
+				$('#out_cats').show();
+				$('#hidden_type').attr('value',0);
 
 				document.getElementById('date_picker').value = date_copy;
 				populate_transactions(viewing_month,viewing_year);
@@ -1021,14 +1103,14 @@ $('#in_or_out').change(function(){
 	$('#amount').toggleClass('red_row');
 	$('#amount').toggleClass('green_row');
 
-	if(!this.checked) {
+	if(this.checked) {
+		$('#in_cats').show();
+		$('#hidden_type').attr('value',1);
+	}
+	else{
 		$('#out_cats').show();
 		$('#hidden_type').attr('value',0);
 
-	}
-	else{
-		$('#in_cats').show();
-		$('#hidden_type').attr('value',1);
 	}
 })
 
