@@ -34,7 +34,8 @@ CREATE TABLE `cqeiq_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `cqeiq_users` (`rqipo_id`, `vnaik_email`, `dfpcc_validated_email`, `oifgh_password`, `btnyv_salt`, `btasd_reg_datetime`, `pjkla_last_login`, `tgrrq_login_attempts`, `hhyyi_locked`, `nvrie_new_password_hash`, `wefef_validate_email_hash`, `nvruo_mfa_code`, `eglaa_mfa_expires`, `vrnxx_mfa_enabled`, `zxcpo_config`, `asfdf_active_sub`, `sdgzp_stripe_id`, `nvrpp_first_name`, `nvrpp_last_name`, `etnvc_current_bal`) VALUES
-(1,	'tristan@lightinsight.app',	1,	'C59578D0AE8839166D861B9EEC5831C38C7C87575F881E1F3F2FE62FE7CA18A7004A583040AA4F5C54286FDDB257D2F5E0233F27F0B789751DEE92219A8F34D0',	'vnru8d93',	'2020-02-09 14:22:06',	'0000-00-00 00:00:00',	0,	0,	'',	'',	'',	'0000-00-00 00:00:00',	0,	'',	1,	'',	'Tristan',	'Nothling',	346.99);
+(1, 'tristan@lightinsight.app', 1,  '0fda37b79643c757a72d6816d4d2960b24b15c18582c3f528569355272c398f111625e47b25095f0d6d8abd09c8089052103ad41bef37a9353df2fb40cd99b95', 'vnru8d93', '2020-02-09 14:22:06',  '0000-00-00 00:00:00',  0,  0,  '', '', '', '0000-00-00 00:00:00',  0,  '', 1,  '', 'Tristan',  'Nothling', 346.99),
+(2001,  'tcnwilson@hotmail.co.uk',  1,  '6f7a04993a74a49e7df823a8ae8f59403fd47f4b3f051823ea04625d3a6db5cc16a58ca200311791885fd5f15f6a68f965e621abf8e8e476b95841c0d5095da8', 'fh347cna', '2020-03-10 16:43:32',  '0000-00-00 00:00:00',  0,  0,  '', '', '', '0000-00-00 00:00:00',  0,  '', 1,  '', 'Teagan', 'Wilson', -1400.00);
 
 DROP TABLE IF EXISTS `asdfz_sessions`;
 CREATE TABLE `asdfz_sessions` (
@@ -79,8 +80,8 @@ INSERT INTO `jwrpa_categories` (`aszcp_id`, `afkvx_name`, `hnccp_type`) VALUES
 DROP TABLE IF EXISTS `nnbca_recurring_transactions`;
 CREATE TABLE `nnbca_recurring_transactions` (
   `qwepo_id` int(8) unsigned NOT NULL,
-  `bsdjw_repeat_type` int(2) unsigned NOT NULL COMMENT '1:Certain date every month, 2:Every x days',
   `dbfxv_type` int(2) unsigned NOT NULL,
+  `bsdjw_repeat_type` int(2) unsigned NOT NULL COMMENT '1:Certain date every month, 2:Every x days',
   `etrhc_repeat` int(4) unsigned NOT NULL COMMENT 'Either the date of month, or the amount of days per repeating',
   `xcvbl_active` tinyint(1) unsigned NOT NULL,
   `egbvv_start_date` date NOT NULL,
@@ -96,6 +97,8 @@ CREATE TABLE `nnbca_recurring_transactions` (
   CONSTRAINT `nnbca_recurring_transactions_ibfk_2` FOREIGN KEY (`egtrr_belongs_to`) REFERENCES `cqeiq_users` (`rqipo_id`) ON DELETE SET NULL ON UPDATE SET NULL,
   CONSTRAINT `nnbca_recurring_transactions_ibfk_3` FOREIGN KEY (`hatrx_category`) REFERENCES `jwrpa_categories` (`aszcp_id`) ON DELETE SET NULL ON UPDATE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 
 
 DROP TABLE IF EXISTS `plzna_transactions`;

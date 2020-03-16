@@ -32,7 +32,7 @@ $global_categories = get_categories($sql_conn);
 <html>
 <head>
 	<link href="https://fonts.googleapis.com/css?family=Rosario|Rufina&display=swap" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Oxygen|Exo&amp;display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Oxygen|Exo&display=swap" rel="stylesheet">
 
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -104,7 +104,7 @@ $global_categories = get_categories($sql_conn);
 		}
 
 		#transactions_section{
-		width: 28%;
+		width: 39%;
     	height: calc(100vh - 62px);
     	display: inline-block;
     	margin-right: -4px;
@@ -120,7 +120,7 @@ $global_categories = get_categories($sql_conn);
 		}
 
 		#graph_section{
-			width:44%;
+			width:61%;
 			display:inline-block;
 			margin-right:-4px;	
 			background-color: #2f2c3a;	
@@ -131,7 +131,7 @@ $global_categories = get_categories($sql_conn);
 
 		#insight_section{
 			background-color: #f7f7f7;
-			width:28%;
+			width:0%;
 			height:100%;
 			display:inline-block;
 			margin-right:-4px;	
@@ -170,7 +170,7 @@ $global_categories = get_categories($sql_conn);
 			box-sizing: border-box;
 		}
 
-		#add_single_transaction{
+		#add_transaction{
 			font-family: Oxygen, sans-serif;
 		}
 
@@ -187,7 +187,7 @@ $global_categories = get_categories($sql_conn);
 			transition: all 0.3s cubic-bezier(0.77, 0, 0.175, 1);
 		}
 
-		#add_single_transaction select{
+		#add_transaction select{
 			width:98%;
 		}
 
@@ -196,7 +196,7 @@ $global_categories = get_categories($sql_conn);
 		box-shadow: 0 0 10px #eeedff;
 		}
 		
-		#add_single_transaction select:focus {
+		#add_transaction select:focus {
 		border: 1px solid #6578dc;
 		box-shadow: 0 0 10px #eeedff;
 		}
@@ -558,7 +558,7 @@ $global_categories = get_categories($sql_conn);
 
 
 
-				<form id="add_single_transaction" method="POST" action="api/transaction.php">
+				<form id="add_transaction" method="POST" action="api/transaction.php">
 					
 					<input type="hidden" name="method" value="create">
 					<input id="hidden_type" type="hidden" name="type" value="0">
@@ -608,11 +608,12 @@ $global_categories = get_categories($sql_conn);
 
 					<br>
 					<div id="recurring_section" style="display:none;">
-						<select name="frequency" style="width:49%;">
-							<option value="monthly">On the x every month</option>
-							<option value="xdays">Every x days</option>
+						<label style="width:20%;">Repeat </label><input style="width:60%" name="occurences" type="number" placeholder="Leave blank if ongoing"><label style="width:20%;"> times</label><br>
+						<select name="repeat_type" style="width:49%;">
+							<option value="1">On the x every month</option>
+							<option value="2">Every x days</option>
 						</select>
-						<input style="width:49%;" id="freq_number" name="freq_number">
+						<input style="width:49%;" id="repeat" name="repeat" placeholder="What is x? e.g. 19th">
 					</div>
 
 					<input style="width:100%;display:block" type="text" placeholder="Description" name="description">
@@ -893,7 +894,7 @@ $('#viewing_date').html(months_to_numbers[viewing_month-1] + " " + viewing_year)
 
 
 
-$("#add_single_transaction").submit(function(e) {
+$("#add_transaction").submit(function(e) {
 
     e.preventDefault(); // avoid to execute the actual submit of the form.
 
@@ -913,9 +914,10 @@ $("#add_single_transaction").submit(function(e) {
 			
 			if (result_object.result === "success")
 			{
+				transaction_type = 0;
 				$('.loader2').hide();
 				var date_copy = document.getElementById('date_picker').value 
-				$('#add_single_transaction').trigger("reset");
+				$('#add_transaction').trigger("reset");
 
 				$('#amount').removeClass('red_row');
 				$('#amount').removeClass('green_row');
@@ -1003,6 +1005,7 @@ $('#th_single').click(function(){
 	$('.transaction_header').removeClass('th_chosen');
 	$(this).addClass('th_chosen');
 	$('#recurring_section').slideUp(95);
+	$('#add_transaction').attr("action","api/transaction.php")
 });
 
 $('#th_recurring').click(function(){
@@ -1010,6 +1013,7 @@ $('#th_recurring').click(function(){
 	$('.transaction_header').removeClass('th_chosen');
 	$(this).addClass('th_chosen');
 	$('#recurring_section').slideDown(95);
+	$('#add_transaction').attr("action","api/recurring_transaction.php")
 });
 
 $('#in_or_out').change(function(){

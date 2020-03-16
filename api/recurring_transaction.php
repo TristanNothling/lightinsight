@@ -39,6 +39,7 @@ if ($_POST['method'] === 'create') {
 
 	/*checkDate($transaction_date);*/
 	/*if $date_check == false {$final_result = ['result'=>'failure','message'=>'Invalid date'];}*/
+
 	$type = intval($_POST['type']);
 
 	if ($type==1){
@@ -53,10 +54,6 @@ if ($_POST['method'] === 'create') {
 	}
 
 	$amount = strval($_POST['amount']);
-
-	$frequency = $_POST['frequency']; /*monthly or xdays*/
-
-	$x = $_POST['freq_number'];
 
 	$encryption_key = $_SESSION['logged_user_id'] . $_SESSION['pepper'];
 
@@ -75,22 +72,53 @@ if ($_POST['method'] === 'create') {
     	die();
 	}
 
-	$stmt = $sql_conn->prepare("INSERT INTO `nnbca_recurring_transactions` (tiyrh_value_sig,egtrr_belongs_to,jwena_description,egbvv_start_date,hatrx_category,dbfxv_type,bsdjw_repeat_type,oqwaa_enabled) VALUES (?,?,?,?,?,?,?)");
+	$repeat_type = intval($_POST['repeat_type']); /*1 date every month, 2 every x days*/
+	$repeat = intval($_POST['repeat']); /*date or number of days*/
+	$occurences = intval($_POST['occurences']);
+
+	$stmt = $sql_conn->prepare("INSERT INTO `nnbca_recurring_transactions` (tiyrh_value_sig,egtrr_belongs_to,jwena_description,egbvv_start_date,hatrx_category,dbfxv_type,bsdjw_repeat_type,etrhc_repeat,vbzpp_occurences,xcvbl_enabled) VALUES (?,?,?,?,?,?,?,?,?,?)");
 	$enabled = 1;
 	/*insert into recurring transactions*/
 
-	$stmt->bind_param("ssssiii",$encrypted_amount,$_SESSION['logged_user_id'],$encrypted_description,$newformat,$category,$type,$enabled);
+	$stmt->bind_param("ssssiiiiii",$encrypted_amount,$_SESSION['logged_user_id'],$encrypted_description,$newformat,$category,$type,$repeat_type,$repeat,$occurences,$enabled);
 	$stmt->execute();
+
+	$parent_id = $sql_conn->insert_id;
+
+
+	$date_scaler = new DateTime($newformat); /*This is going to incremment the days as it goes*/
+
+	if (empty($occurences)  || $occurences == 0) {
+		$occurences = 50; /*just make 50 for now*/
+	}
+
+	
+	for ($i=0; $i < $occurences; $i++) { 
+		if ($repeat_type==1){
+
+			$unformatted_insert_date = get_inc_date($date_scaler,$repeat,$i);
+			$insert_date = $unformatted_insert_date->format('Y-m-d');
+
+			$stmt = $sql_conn->prepare("INSERT INTO plzna_transactions (askdl_value_sig,vrbtn_belongs_to,wqeok_description,jwecv_date,haasx_category,jkqwe_type,oqwaa_enabled,asdjl_recurring_parent) VALUES (?,?,?,?,?,?,?,?)");
+			$enabled = 1;
+
+			$stmt->bind_param("ssssiiis",$encrypted_amount,$_SESSION['logged_user_id'],$encrypted_description,$insert_date,$category,$type,$enabled,$parent_id);
+			$stmt->execute();
+
+		}
+
+		if ($repeat_type==2){
+			$final_output = ['result'=>'failure','message'=>'Inserted transaction'];
+			die();
+		}
+
+	}
+
+	
 
 	/*now, create all individual transactions*/
 
-	/*how many times does this transaction repeat?*/
-	/* if it's 0, then get current year*/
-
 	/*functions required, highest day in this month*/
-	
-
-
 
 	$final_output = ['result'=>'success','message'=>'Inserted transaction'];
 	die();

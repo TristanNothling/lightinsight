@@ -24,7 +24,6 @@ function sendOutput(){
 	echo json_encode($final_output);
 
 	$sql_conn->close();
-	
 }
 
 function encrypt($pure_string, $encryption_key) {
@@ -101,11 +100,11 @@ if($result->num_rows === 0) {
     return $final_array;
 }
 
-function get_user_details($sql_conn,$user_id) {
+function get_user_details($sql_conn,$user_id,$pepper) {
 
-$stmt = $sql_conn->prepare("SELECT * FROM `cqeiq_users` WHERE `rqipo_id` = ?");
+$stmt = $sql_conn->prepare("SELECT * FROM `cqeiq_users` WHERE `rqipo_id` = ? AND `btnyv_salt` = ? ");
 
-$stmt->bind_param("s",$user_id);
+$stmt->bind_param("ss",$user_id,$pepper);
 $stmt->execute();
 
 $result = $stmt->get_result();
@@ -117,5 +116,34 @@ while($row = $result->fetch_assoc()) {
 
 return $output;
 }
+
+function get_inc_date($date,$day_of_month,$mod){
+
+    /*date is start date*/
+    /*day_of_month relates to what day the in/out appears on */
+
+    $year = intval($date -> format( 'Y'));
+    $month = intval($date -> format( 'm'));
+    $day = intval($date -> format( 'd'));
+
+    $month+=$mod; 
+
+    $add_year = intval($month/12);
+    $month = intval($month%12);
+
+    $newdate = new DateTime(strval($year+$add_year) .'/' .strval(sprintf("%02d", $month)) . '/01');
+
+    $last_day = intval($newdate ->format( 't' ));
+
+    if ($day_of_month>$last_day)
+        {$day_of_month = $last_day;}
+
+    return new DateTime(strval($year+$add_year) . '/' . strval(sprintf("%02d", $month)) . '/' . strval($day_of_month));
+
+}
+
+
+
+
 
 ?>
