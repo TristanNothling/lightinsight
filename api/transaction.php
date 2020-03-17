@@ -106,16 +106,27 @@ if ($_POST['method'] === 'modify'){
 	$category = intval($_POST['category']);
 
 }
+
 if ($_POST['method'] === 'delete'){
 
-	/*check not recurring */
+	$tran_id = strval($_POST['tid']);
+	$user_id = intval($_SESSION['logged_user_id']);
 
-	$_POST['transaction_id'];
+	$stmt = $sql_conn->prepare("DELETE FROM plzna_transactions WHERE `zeqwe_id` = ? AND `vrbtn_belongs_to` = ? ");
+	$stmt->bind_param("si",$tran_id,$user_id);
+	$result = boolval($stmt->execute());
 
-	/*prepared statement, delete from transactions*/
+	if ($result){
+		$final_output = ['result'=>'success','message'=>'Deleted Transaction'];
+		die();
+	}
+	else{
+		$final_output = ['result'=>'failure','message'=>'Transaction does not belong to you or exist'];
+		die();
+	}
 
 }
 
-$final_result = ['result'=>'failure','message'=>'Invalid method'];
+$final_output = ['result'=>'failure','message'=>'Invalid method'];
 
 ?>

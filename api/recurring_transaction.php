@@ -40,7 +40,7 @@ if ($_POST['method'] === 'create') {
 	/*checkDate($transaction_date);*/
 	/*if $date_check == false {$final_result = ['result'=>'failure','message'=>'Invalid date'];}*/
 
-	$type = intval($_POST['type']);
+	$type = intval($_POST['type']); /* in or out*/
 
 	if ($type==1){
 		$category = $_POST['in_cat'];
@@ -76,17 +76,23 @@ if ($_POST['method'] === 'create') {
 	$repeat = intval($_POST['repeat']); /*date or number of days*/
 	$occurences = intval($_POST['occurences']);
 
+
 	$stmt = $sql_conn->prepare("INSERT INTO `nnbca_recurring_transactions` (tiyrh_value_sig,egtrr_belongs_to,jwena_description,egbvv_start_date,hatrx_category,dbfxv_type,bsdjw_repeat_type,etrhc_repeat,vbzpp_occurences,xcvbl_enabled) VALUES (?,?,?,?,?,?,?,?,?,?)");
 	$enabled = 1;
 	/*insert into recurring transactions*/
 
-	$stmt->bind_param("ssssiiiiii",$encrypted_amount,$_SESSION['logged_user_id'],$encrypted_description,$newformat,$category,$type,$repeat_type,$repeat,$occurences,$enabled);
-	$stmt->execute();
+	$stmt->bind_param("sissiiiiii",$encrypted_amount,$_SESSION['logged_user_id'],$encrypted_description,$newformat,$category,$type,$repeat_type,$repeat,$occurences,$enabled);
+	$result = $stmt->execute();
+
+	if (!$result)
+	{
+		$final_output = ['result'=>'failure','message'=>'Could not insert recurring transaction' ];
+    	die();
+	}
 
 	$parent_id = $sql_conn->insert_id;
 
-
-	$date_scaler = new DateTime($newformat); /*This is going to incremment the days as it goes*/
+	$start_date = new DateTime($newformat); /*starting from this date*/
 
 	if (empty($occurences)  || $occurences == 0) {
 		$occurences = 50; /*just make 50 for now*/
@@ -96,29 +102,26 @@ if ($_POST['method'] === 'create') {
 	for ($i=0; $i < $occurences; $i++) { 
 		if ($repeat_type==1){
 
-			$unformatted_insert_date = get_inc_date($date_scaler,$repeat,$i);
+			$unformatted_insert_date = get_monthly_inc_date($start_date,$repeat,$i);
 			$insert_date = $unformatted_insert_date->format('Y-m-d');
-
-			$stmt = $sql_conn->prepare("INSERT INTO plzna_transactions (askdl_value_sig,vrbtn_belongs_to,wqeok_description,jwecv_date,haasx_category,jkqwe_type,oqwaa_enabled,asdjl_recurring_parent) VALUES (?,?,?,?,?,?,?,?)");
-			$enabled = 1;
-
-			$stmt->bind_param("ssssiiis",$encrypted_amount,$_SESSION['logged_user_id'],$encrypted_description,$insert_date,$category,$type,$enabled,$parent_id);
-			$stmt->execute();
-
 		}
 
 		if ($repeat_type==2){
-			$final_output = ['result'=>'failure','message'=>'Inserted transaction'];
-			die();
+
+			$unformatted_insert_date = get_day_inc_date($start_date,$repeat,$i);
+			$insert_date = $unformatted_insert_date->format('Y-m-d');
+			
 		}
+
+		
+		$stmt = $sql_conn->prepare("INSERT INTO plzna_transactions (askdl_value_sig,vrbtn_belongs_to,wqeok_description,jwecv_date,haasx_category,jkqwe_type,oqwaa_enabled,asdjl_recurring_parent) VALUES (?,?,?,?,?,?,?,?)");
+		$enabled = 1;
+
+		$stmt->bind_param("ssssiiis",$encrypted_amount,$_SESSION['logged_user_id'],$encrypted_description,$insert_date,$category,$type,$enabled,$parent_id);
+		$stmt->execute();
 
 	}
 
-	
-
-	/*now, create all individual transactions*/
-
-	/*functions required, highest day in this month*/
 
 	$final_output = ['result'=>'success','message'=>'Inserted transaction'];
 	die();

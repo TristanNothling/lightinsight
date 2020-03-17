@@ -478,14 +478,15 @@ $global_categories = get_categories($sql_conn);
 
 	tr{
 		height:56px;
+		transition: all 0.16s cubic-bezier(0.77, 0, 0.175, 1);
 	}
 
 	.green_row{
-		background: #cfffe0 !important;
+		background: #cfffe0;
 	}
 
 	.red_row{
-		    color: #ad6589 !important;
+		color: #ad6589;
 	}
 
 	@media only screen and (max-width: 980px) {
@@ -506,8 +507,8 @@ $global_categories = get_categories($sql_conn);
 		position:absolute;
 		z-index: 500;
 		display:none;
-	box-shadow: 3px 5px 6px -1px #868686;
-
+		box-shadow: 3px 5px 6px -1px #868686;
+		transition: all 0.16s cubic-bezier(0.77, 0, 0.175, 1);
 	}
 
 	.openMenu{
@@ -526,6 +527,12 @@ $global_categories = get_categories($sql_conn);
 
 	.menuItem:hover{
 		background:#ececec;
+		cursor:pointer;
+	}
+
+	.selectedRow{
+		color:#60d4ff;
+		background:white;
 	}
 
 	</style>
@@ -543,9 +550,9 @@ $global_categories = get_categories($sql_conn);
 <script src="dp/js/datepicker.min.js"></script>
 <script type="text/javascript" src="dp/js/i18n/datepicker.en.js"></script>
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
-  
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
+ 
+<script type="text/javascript" src="DataTables/datatables.min.js"></script>
 
 <body>
 
@@ -573,9 +580,9 @@ $global_categories = get_categories($sql_conn);
 
 	<div class="oneSection" id="transactions_section">
 
-						<div class="contextMenu">
-	<div class="menuItem edit">Edit</div>
-	<div class="menuItem delete">Delete</div>
+<div class="contextMenu">
+	<div class="menuItem editTrans">Edit</div>
+	<div class="menuItem deleteTrans">Delete</div>
 </div>
 		
 		<div class="loader loader--style2" style="display:none;">
@@ -663,7 +670,7 @@ $global_categories = get_categories($sql_conn);
 
 			<style>
 				#monthly_transactions tr:hover{
-					opacity:0.7;
+					background:white;
 					cursor: pointer;
 				}
 
@@ -723,7 +730,6 @@ $global_categories = get_categories($sql_conn);
 				}
 
 				#transaction_table{
-					margin: 23px 0px;
     				font-size: 0.8em;
     				background: #f7f7f7;
 				}
@@ -865,6 +871,7 @@ var options = {
 var chart = new ApexCharts(document.querySelector("#chart"), options);
 chart.render();
 
+
 $(document).mouseup(function(e) 
 {
     var menu = $('.contextMenu');
@@ -875,10 +882,10 @@ $(document).mouseup(function(e)
     {
     	if (!box.is(e.target) && box.has(e.target).length === 0) {
         	menu.removeClass('openMenu');
+        	$('.table_row').removeClass('selectedRow');
         }
     }
 });
-
 
 
 function create_row(fetched_data){
@@ -887,9 +894,9 @@ function create_row(fetched_data){
 	var green = fetched_data['type'];
 
 	if (green===0){
-	the_row+='<tr class="red_row">';
+	the_row+='<tr class="table_row red_row">';
 	}else{
-	the_row+='<tr class="green_row">';
+	the_row+='<tr class="table_row green_row">';
 	}
 
 	the_row+='<td>'+fetched_data.description+'</td><td>'+fetched_data.value+'</td><td>'+fetched_data.date+'</td><td class="editTransaction" data_tid="'+fetched_data.id+'""></td></tr>';
@@ -921,13 +928,16 @@ function populate_transactions(month,year){
 
 			$('.editTransaction').click(function(e){
 
+				$('.table_row').removeClass('selectedRow');
+				$(this).parent().addClass('selectedRow');
+
 				$('.contextMenu').addClass('openMenu');
 				$('.contextMenu').attr('data_tid',$(this).attr('data_tid'));
 				var offset = $(this).offset();
 				var scrollX = $('#transactions_section').scrollTop();
 				console.log(scrollX);
 				$('.contextMenu').css('left', (offset.left - 200) + 'px');
-				$('.contextMenu').css('top', (offset.top - 62 +scrollX) +'px');
+				$('.contextMenu').css('top', (offset.top - 62 + scrollX) +'px');
 
 			})
 
@@ -969,6 +979,19 @@ populate_graph(chart);
 $('#viewing_date').html(months_to_numbers[viewing_month-1] + " " + viewing_year);
 
 
+
+$('.deleteTrans').click(function(e) {
+	var tran_id = $(this).parent().attr('data_tid');
+	$.post('api/transaction.php',{method:'delete',tid:tran_id}).done(function( data ) {
+    		var result_object = JSON.parse(data);
+			if (result_object.result === "success"){
+				populate_transactions(viewing_month,viewing_year);
+				populate_graph(chart);
+				$('.contextMenu').removeClass('openMenu');
+        		$('.table_row').removeClass('selectedRow');
+			}
+  	});
+})
 
 
 $("#add_transaction").submit(function(e) {

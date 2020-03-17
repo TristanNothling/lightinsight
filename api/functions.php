@@ -122,7 +122,18 @@ while($row = $result->fetch_assoc()) {
 return $output;
 }
 
-function get_inc_date($date,$day_of_month,$mod){
+function get_day_inc_date($date,$xdays,$mod){
+
+	if ($mod>0)
+	{
+	$days_to_add = intval($xdays * $mod);
+	$date->add(new DateInterval('P'.$days_to_add.'D'));
+	}
+
+	return $date;
+}
+
+function get_monthly_inc_date($date,$day_of_month,$mod){
 
     /*date is start date*/
     /*day_of_month relates to what day the in/out appears on */
