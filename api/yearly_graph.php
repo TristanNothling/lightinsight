@@ -67,7 +67,7 @@ $current_balance = $user_details['current_balance'];
 
 $date_array[$current_date->format('d-m-Y')] = $current_balance;
 
-while ($current_date->format('Y') == $year_requested)
+while ($current_date->format('Y') == $year_requested) /*while current_date, which gets incremented is in the array of years_requested */
 {
 
 	if (isset($transactions[$current_date->format('d-m-Y')] ))

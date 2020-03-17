@@ -53,10 +53,9 @@ if ($_POST['method'] === 'create') {
 		$final_result = ['result'=>'failure','message'=>'Invalid category'];
 	}
 
+
 	$amount = strval($_POST['amount']);
-
 	$encryption_key = $_SESSION['logged_user_id'] . $_SESSION['pepper'];
-
 	$description = $_POST['description'];
 
 	if (!ctype_alpha(str_replace(' ', '', $description))){
@@ -76,6 +75,10 @@ if ($_POST['method'] === 'create') {
 	$repeat = intval($_POST['repeat']); /*date or number of days*/
 	$occurences = intval($_POST['occurences']);
 
+	if (!preg_match("/^\d+$/", $repeat) && !preg_match("/^\d+$/", $occurences)) {
+    	$final_output = ['result'=>'failure','message'=>'Invalid repeating number or occurences'];
+    	die();
+	}
 
 	$stmt = $sql_conn->prepare("INSERT INTO `nnbca_recurring_transactions` (tiyrh_value_sig,egtrr_belongs_to,jwena_description,egbvv_start_date,hatrx_category,dbfxv_type,bsdjw_repeat_type,etrhc_repeat,vbzpp_occurences,xcvbl_enabled) VALUES (?,?,?,?,?,?,?,?,?,?)");
 	$enabled = 1;
@@ -94,7 +97,7 @@ if ($_POST['method'] === 'create') {
 
 	$start_date = new DateTime($newformat); /*starting from this date*/
 
-	if (empty($occurences)  || $occurences == 0) {
+	if (empty($occurences)  || $occurences == 0 || $occurences>50) {
 		$occurences = 50; /*just make 50 for now*/
 	}
 
@@ -113,7 +116,7 @@ if ($_POST['method'] === 'create') {
 			
 		}
 
-		
+
 		$stmt = $sql_conn->prepare("INSERT INTO plzna_transactions (askdl_value_sig,vrbtn_belongs_to,wqeok_description,jwecv_date,haasx_category,jkqwe_type,oqwaa_enabled,asdjl_recurring_parent) VALUES (?,?,?,?,?,?,?,?)");
 		$enabled = 1;
 

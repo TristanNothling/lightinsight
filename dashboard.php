@@ -650,10 +650,10 @@ $global_categories = get_categories($sql_conn);
 					<div id="recurring_section" style="display:none;">
 						<label style="width:20%;">Repeat </label><input style="width:60%" name="occurences" type="number" placeholder="Leave blank if ongoing"><label style="width:20%;"> times</label><br>
 						<select name="repeat_type" style="width:49%;">
-							<option value="1">On the x every month</option>
+							<option value="1">Monthly on day x</option>
 							<option value="2">Every x days</option>
 						</select>
-						<input style="width:49%;" id="repeat" name="repeat" placeholder="What is x? e.g. 19th">
+						<input style="width:49%;" id="repeat" name="repeat" placeholder="What is x? e.g. 19">
 					</div>
 
 					<input style="width:100%;display:block" type="text" placeholder="Description" name="description">
