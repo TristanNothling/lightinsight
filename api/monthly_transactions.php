@@ -32,9 +32,10 @@ $stmt->execute();
 
 $result = $stmt->get_result();
 if($result->num_rows === 0) {
-$final_output = ['result'=>'success','data'=>[]];
-die();
+	$final_output = ['result'=>'success','data'=>[]];
+	die();
 }
+
 $final_output = ['result'=>'success'];
 
 while($row = $result->fetch_assoc()) {
@@ -43,6 +44,7 @@ while($row = $result->fetch_assoc()) {
   $real_date = date("d-m-Y", strtotime($row['jwecv_date']));  
   $real_type = $row['jkqwe_type'];
   $real_id = $row['zeqwe_id'];
+  
   $final_output['data'][] = ['id'=>$real_id,'type'=>$real_type,'description'=>$real_description,'value'=>$real_amount,'date'=>$real_date]; 
 }
 

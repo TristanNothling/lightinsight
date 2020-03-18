@@ -15,8 +15,6 @@ include 'hadfj_connect.php';
 
 register_shutdown_function('sendOutput');
 
-
-
 $database_result = explode(":", $db_status);
 
 if ('failure' == $database_result[0]){

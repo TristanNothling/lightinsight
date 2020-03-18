@@ -66,8 +66,6 @@ if ($_POST['method'] === 'create') {
     	die();
 	}
 
-
-
 	if (!ctype_alpha(str_replace(' ', '', $description))){
 		$final_output = ['result'=>'failure','message'=>'Invalid description'];
 		die();

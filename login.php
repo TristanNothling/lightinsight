@@ -325,7 +325,7 @@ if (isset($_SESSION['token']) && isset($_SESSION['token_id'])) {
 	<div id="right_section">
 		
 		<div id="welcome_text">
-			<h1 class="alt gold_text">Good evening.</h1>
+			<h1 class="alt gold_text"><?php include 'greeting.php'; ?></h1>
 			<span class="white_text">Welcome to the new, interactive way to manage your money.</span>
 		</div>
 

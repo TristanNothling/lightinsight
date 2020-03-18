@@ -24,7 +24,6 @@ $categories = get_categories($sql_conn);
 /*check logged user in session, otherwise fuck off!!!*/
 
 
-
 if ($_POST['method'] == '' || !isset($_POST['method'])){
 	$final_output= ['result'=>'failure','message'=>'Invalid method'];
 	die();
@@ -163,6 +162,6 @@ if ($_POST['method'] === 'delete'){
 
 }
 
-$final_result = ['result'=>'failure','message'=>'Invalid method'];
+$final_output = ['result'=>'failure','message'=>'Invalid method'];
 
 ?>
