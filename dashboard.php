@@ -20,9 +20,12 @@ else
 			session_unset();
 
 			header('Location: login.php?reason=3'); 
+			/*expired = true*/
 		}
 	}
 }
+
+/*if expired == true, redirect to login*/
 
 $global_categories = get_categories($sql_conn);
 
@@ -409,6 +412,7 @@ $global_categories = get_categories($sql_conn);
 	  position: relative;
 	  height: 24px;
 	  width: 48px;
+	  min-width: 48px;
 	  border-radius: 15px;
 	  background: #d6d6d6;
 	  overflow: hidden;
@@ -491,6 +495,10 @@ $global_categories = get_categories($sql_conn);
 
 	@media only screen and (max-width: 980px) {
 		.oneSection{
+			width:100% !important;
+		}
+
+		#settings_section{
 			width:100% !important;
 		}
 	}
@@ -605,7 +613,7 @@ $global_categories = get_categories($sql_conn);
 
 
 					<label class="label" id="toggle_type">
-						<div class="label-text">Out</div>
+						<div class="label-text">-</div>
 					  <div class="toggle">
 					    <input class="toggle-state" type="checkbox" id="in_or_out" name="in_or_out" value="check" />
 					    <div class="toggle-inner">
@@ -613,7 +621,7 @@ $global_categories = get_categories($sql_conn);
 					    </div>
 					    <div class="active-bg"></div>
 					  </div>
-					  <div class="label-text">In</div>
+					  <div class="label-text">+</div>
 					</label>
 
 
@@ -894,18 +902,18 @@ function create_row(fetched_data){
 	var green = fetched_data['type'];
 
 	if (green===0){
-	the_row+='<tr class="table_row red_row">';
+		the_row+='<tr class="table_row red_row">';
 	}else{
-	the_row+='<tr class="table_row green_row">';
+		the_row+='<tr class="table_row green_row">';
 	}
 
 	the_row+='<td>'+fetched_data.description+'</td><td>'+fetched_data.value+'</td><td>'+fetched_data.date+'</td><td class="editTransaction" data_tid="'+fetched_data.id+'""></td></tr>';
 
 	return the_row;
-
 }
 
 function populate_transactions(month,year){
+
 	$.ajax({
 	type: "GET",
 	url: 'api/monthly_transactions.php?year=' + year + '&month='+ month ,
@@ -917,11 +925,10 @@ function populate_transactions(month,year){
 		if (result_object.result === "success")
 		{
 			$('#transaction_table').html('<thead><tr><th>Value</th><th>Date</th><th>More</th></tr></thhead><tbody>');
+			
 			for (var i = 0; i < result_object['data'].length; i++){
-
 				var next_row = create_row(result_object['data'][i]);
 				$('#transaction_table').append(next_row);
-
 			}
 
 			$('#transaction_table').append('</tbody>');
@@ -939,9 +946,9 @@ function populate_transactions(month,year){
 				$('.contextMenu').css('left', (offset.left - 200) + 'px');
 				$('.contextMenu').css('top', (offset.top - 62 + scrollX) +'px');
 
-			})
+			});
 
-			table.destroy()
+			table.destroy();
 			table = $('#transaction_table').DataTable({"paging": false});
 			
 		}
@@ -978,8 +985,6 @@ populate_graph(chart);
 
 $('#viewing_date').html(months_to_numbers[viewing_month-1] + " " + viewing_year);
 
-
-
 $('.deleteTrans').click(function(e) {
 	var tran_id = $(this).parent().attr('data_tid');
 	$.post('api/transaction.php',{method:'delete',tid:tran_id}).done(function( data ) {
@@ -992,7 +997,6 @@ $('.deleteTrans').click(function(e) {
 			}
   	});
 })
-
 
 $("#add_transaction").submit(function(e) {
 
@@ -1140,7 +1144,7 @@ $('#in_or_out').change(function(){
 
 $("#logout_button_container").click(function(e) {
 
-    e.preventDefault(); // avoid to execute the actual submit of the form.
+    e.preventDefault(); // avoid to execute the actual submit of the form
 
 	$.ajax({
 		type: "POST",
