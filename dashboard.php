@@ -27,6 +27,10 @@ else
 
 /*if expired == true, redirect to login*/
 
+$user_details = get_user_details($sql_conn,$_SESSION['logged_user_id'],$_SESSION['pepper']);
+$_SESSION['current_balance'] = $user_details['current_balance'];
+$current_balance = $_SESSION['current_balance'];
+
 $global_categories = get_categories($sql_conn);
 
 ?>
@@ -42,7 +46,8 @@ $global_categories = get_categories($sql_conn);
 	<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-	<link rel="manifest" href="site.webmanifest">
+	<link rel="shortcut icon" href="favicon.ico">
+	<!-- <link rel="manifest" href="site.webmanifest"> -->
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 	<meta name="msapplication-TileColor" content="#603cba">
 	<meta name="theme-color" content="#ffffff">
@@ -86,6 +91,7 @@ $global_categories = get_categories($sql_conn);
 			width:100vw;
 			white-space: nowrap;
 			height:100vh;
+			overflow: hidden;
 		}
 
 		#settings_section{
@@ -186,7 +192,7 @@ $global_categories = get_categories($sql_conn);
 			height:37px;
 			border:0;
 			font-size:18px;
-			border: 1px solid #eee;
+			border: 1px solid #bce2d6;
 			transition: all 0.3s cubic-bezier(0.77, 0, 0.175, 1);
 		}
 
@@ -500,6 +506,7 @@ $global_categories = get_categories($sql_conn);
 
 		#settings_section{
 			width:100% !important;
+			left: -100%;
 		}
 	}
 
@@ -542,6 +549,36 @@ $global_categories = get_categories($sql_conn);
 		color:#60d4ff;
 		background:white;
 	}
+
+	.panel{
+		position: relative;
+		overflow: hidden;
+	}
+
+	.panel_header{
+		margin-bottom: 32px;
+	}
+
+	.panel_header:before{
+		    content: "";
+		    position: absolute;
+		    width: 102%;
+		    height: 8px;
+		    bottom: 0;
+		    left: -2px;
+		    border-bottom: 2px solid #6578dc;
+
+		}
+
+		#edit_balance{
+			margin-top: 23px;
+		}
+
+		#recurring_section label{
+		width: 25%;
+    	margin: 13px 4px 13px 4px;
+   	 	padding: 7px 7px 7px 7px;
+		}
 
 	</style>
 
@@ -597,7 +634,15 @@ $global_categories = get_categories($sql_conn);
 			<img src="purple_loader.svg">
 		</div>
 
-		<div class="panel" style="min-height:5%;">
+		<div class="panel">
+			<span class="panel_header">Your current balance (&pound;)</span>
+			<form id="edit_balance" method="POST" action="api/balance.php">
+				<input id="your_balance" onkeydown="return event.keyCode !== 69" style="width:49%;" type="number" name="balance" value="<?php echo $current_balance; ?>">
+				<button id="update_balance" style="width:49%;" class="button primary_button" type="submit" name="update" value="update">Update</button>
+			</form>
+		</div>
+
+		<div class="panel">
 
 				<span id="th_single" class="transaction_header th_chosen">One off</span>
 
@@ -656,7 +701,12 @@ $global_categories = get_categories($sql_conn);
 
 					<br>
 					<div id="recurring_section" style="display:none;">
-						<label style="width:20%;">Repeat </label><input style="width:60%" name="occurences" type="number" placeholder="Leave blank if ongoing"><label style="width:20%;"> times</label><br>
+
+						<div style="display:inline-flex;width:100%;">
+						<label style="text-align:right;">Repeat </label><input style="width:50%" name="occurences" type="number" placeholder="Leave blank if ongoing"><label> times</label>
+						</div>
+
+						<br>
 						<select name="repeat_type" style="width:49%;">
 							<option value="1">Monthly on day x</option>
 							<option value="2">Every x days</option>
@@ -997,6 +1047,22 @@ $('.deleteTrans').click(function(e) {
 			}
   	});
 })
+
+$('#edit_balance').submit(function(e){
+	e.preventDefault(); // avoid to execute the actual submit of the form.
+
+    var form = $(this);
+    var url = form.attr('action');
+    var submit_data = form.serialize(); // serializes the form's elements.
+
+	$.post(url,submit_data).done(function(data){
+		var result_object = JSON.parse(data);
+		if (result_object.result === "success"){
+			/*add class success_update to input*/
+			populate_graph(chart);
+		}
+	});
+});
 
 $("#add_transaction").submit(function(e) {
 

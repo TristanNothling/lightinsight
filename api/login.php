@@ -39,7 +39,7 @@ if (!isset($_POST) || '' == $_POST['email'] || '' == $_POST['password'] ){
 $email = $_POST['email'];
 $submitted_password = $_POST['password'];
 
-$get_user_query = "SELECT rqipo_id, dfpcc_validated_email, vnaik_email, oifgh_password, btnyv_salt, btasd_reg_datetime, tgrrq_login_attempts, hhyyi_locked FROM cqeiq_users WHERE vnaik_email = ?";
+$get_user_query = "SELECT rqipo_id, dfpcc_validated_email, vnaik_email, oifgh_password, btnyv_salt, btasd_reg_datetime, tgrrq_login_attempts, hhyyi_locked, etnvc_current_bal FROM cqeiq_users WHERE vnaik_email = ?";
 
 $stmt = $sql_conn->prepare($get_user_query);
 $stmt->bind_param("s", $email);
@@ -63,6 +63,7 @@ if ($result->num_rows === 1) {
 	$reg_datetime = $intended_user['btasd_reg_datetime'];
 	$login_attempts = (int) $intended_user['tgrrq_login_attempts'];
 	$locked = $intended_user['hhyyi_locked'];
+	$current_balance = $intended_user['etnvc_current_bal'];
 
 	$login_attempts++;
 
@@ -121,6 +122,7 @@ if ($result->num_rows === 1) {
 		$_SESSION['token_id'] = $token_id;
 		$_SESSION['token'] = $your_new_token;
 		$_SESSION['expires'] = $inserted_expire_dt;
+		$_SESSION['current_balance'] = $current_balance;
 
 		session_write_close();
 		

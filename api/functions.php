@@ -81,17 +81,17 @@ function hash_equals_custom($knownString, $userString) {
 
 function get_categories($sql_conn){
 
-$types = [0=>'in',1=>'out'];
+    $types = [0=>'in',1=>'out'];
 
-$final_array= [];
+    $final_array= [];
 
-$stmt = $sql_conn->prepare("SELECT * FROM `jwrpa_categories`");
-$stmt->execute();
+    $stmt = $sql_conn->prepare("SELECT * FROM `jwrpa_categories`");
+    $stmt->execute();
 
-$result = $stmt->get_result();
-if($result->num_rows === 0) {
-	return [];
-}
+    $result = $stmt->get_result();
+    if($result->num_rows === 0) {
+    	return [];
+    }
 
     while($row = $result->fetch_assoc()) {
     	$final_array[$types[$row['hnccp_type']]][$row['aszcp_id']] = $row['afkvx_name'];
@@ -106,20 +106,20 @@ if($result->num_rows === 0) {
 
 function get_user_details($sql_conn,$user_id,$pepper) {
 
-$stmt = $sql_conn->prepare("SELECT * FROM `cqeiq_users` WHERE `rqipo_id` = ? AND `btnyv_salt` = ? ");
+    $stmt = $sql_conn->prepare("SELECT * FROM `cqeiq_users` WHERE `rqipo_id` = ? AND `btnyv_salt` = ? ");
 
-$stmt->bind_param("ss",$user_id,$pepper);
-$stmt->execute();
+    $stmt->bind_param("ss",$user_id,$pepper);
+    $stmt->execute();
 
-$result = $stmt->get_result();
-$output = [];
+    $result = $stmt->get_result();
+    $output = [];
 
-while($row = $result->fetch_assoc()) {
+    while ($row = $result->fetch_assoc()) {
         $output['current_balance'] = $row['etnvc_current_bal'];
         /*add extra variables in scope here*/
     }
 
-return $output;
+    return $output;
 }
 
 function get_day_inc_date($date,$xdays,$mod){
@@ -157,9 +157,5 @@ function get_monthly_inc_date($date,$day_of_month,$mod){
     return new DateTime(strval($year+$add_year) . '/' . strval(sprintf("%02d", $month)) . '/' . strval($day_of_month));
 
 }
-
-
-
-
 
 ?>
