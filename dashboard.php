@@ -580,6 +580,10 @@ $global_categories = get_categories($sql_conn);
    	 	padding: 7px 7px 7px 7px;
 		}
 
+		#recurring_transactions{
+			
+		}
+
 	</style>
 
 
@@ -722,6 +726,15 @@ $global_categories = get_categories($sql_conn);
 			
 		</div>
 
+		<div class="panel" id="recurring_transactions" style="text-align: center;font-family: 'Oxygen', sans-serif;">
+
+			<table id="recurring_transaction_table">
+
+				<span id="recurring_header">Recurring Transactions</span>
+
+				<thead><tr><th>Description</th><th>&pound;</th><th>Date</th><th>More</th></tr></thhead><tbody></tbody></table>
+		</div>
+
 		<div class="panel" id="monthly_transactions" style="text-align:center;font-family: 'Oxygen', sans-serif;">
 
 
@@ -813,7 +826,7 @@ $global_categories = get_categories($sql_conn);
 			</span>
 
 			<table id="transaction_table">
-				<thead><tr><th>Description</th><th>&pound;</th><th>Date</th><th>More</th></tr></thhead><tbody></table>
+				<thead><tr><th>Description</th><th>&pound;</th><th>Date</th><th>More</th></tr></thhead><tbody></tbody></table>
 			
 		</div>
 
@@ -866,6 +879,7 @@ $global_categories = get_categories($sql_conn);
 months_to_numbers = ['Jan','Feb','Mar','Apr','May','June','July','Aug','Sep','Oct','Nov','Dec'];
 
 var table = $('#transaction_table').DataTable({"paging": false});
+var recurring_table = $('#recurring_transaction_table').DataTable({"paging": false});
 
 var options = {
 	chart: {

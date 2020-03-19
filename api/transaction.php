@@ -7,6 +7,7 @@
 /*category list, as array*/
 
 sleep(0.5);
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -37,6 +38,7 @@ if ($_POST['method'] === 'create') {
 
 	/*checkDate($transaction_date);*/
 	/*if $date_check == false {$final_result = ['result'=>'failure','message'=>'Invalid date'];}*/
+
 	$type = intval($_POST['type']);
 
 	if ($type==1){
@@ -61,6 +63,9 @@ if ($_POST['method'] === 'create') {
 	if (preg_match("/^\d+$/", $amount)) {
     	$encrypted_amount = base64_encode(encrypt($amount,$encryption_key));
     	$encrypted_description = base64_encode(encrypt($description,$encryption_key));
+
+    	/*check length of amount and description to ensure they don't exceed maximum length*/
+
 	} else {
     	$final_output = ['result'=>'failure','message'=>'Invalid amount'];
     	die();

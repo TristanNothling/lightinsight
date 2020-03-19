@@ -154,8 +154,10 @@ function get_monthly_inc_date($date,$day_of_month,$mod){
     if ($day_of_month>$last_day)
         {$day_of_month = $last_day;}
 
-    return new DateTime(strval($year+$add_year) . '/' . strval(sprintf("%02d", $month)) . '/' . strval($day_of_month));
+    if ($day_of_month < $day)
+        {$month+=1;}
 
+    return new DateTime(strval($year+$add_year) . '/' . strval(sprintf("%02d", $month)) . '/' . strval($day_of_month));
 }
 
 ?>

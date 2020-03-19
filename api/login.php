@@ -105,6 +105,8 @@ if ($result->num_rows === 1) {
 		$inserted_start_dt = date("Y/m/d H:i:s", strtotime("now"));
 		$inserted_expire_dt = date("Y/m/d H:i:s", strtotime("+60 minutes"));
 
+		$todays_date = $date("Y-m-d",strtotime("now"));
+
 		$user_agent = '';
 		$ip_address = '';
 
@@ -122,10 +124,39 @@ if ($result->num_rows === 1) {
 		$_SESSION['token_id'] = $token_id;
 		$_SESSION['token'] = $your_new_token;
 		$_SESSION['expires'] = $inserted_expire_dt;
-		$_SESSION['current_balance'] = $current_balance;
+
+		$decryption_key = $_SESSION['logged_user_id'] . $_SESSION['pepper'];
+
+
+
+		$stmt = $sql_conn->prepare("SELECT * FROM plzna_transactions WHERE `jwecv_date` < ? AND `vrbtn_belongs_to` = ? AND `xcnap_spent`= 0");
+		$stmt->bind_param("ss",$todays_date,$user_id);
+
+		$balance_modifier = 0;
+
+		$stmt->execute();
+		$result = $stmt->get_result();
+
+		while($row = $result->fetch_assoc()) {
+			$real_amount = decrypt(base64_decode($row['askdl_value_sig']),$decryption_key);
+			$real_type = $row['jkqwe_type'];
+			if ($real_type==1){
+				$balance_modifier += $real_amount;
+			}
+			else{
+				$balance_modifier -= $real_amount;
+			}
+		}
+
+		$new_balance = $current_balance + $balance_modifier;
+
+		/*update database set transactions to spent*/
+		/*update user row set new balance*/
+		
+		$_SESSION['current_balance'] = $new_balance;
 
 		session_write_close();
-		
+
 		$final_output = ['result'=>'success','token'=>$your_new_token];
 		die();
 

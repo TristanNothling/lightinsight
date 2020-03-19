@@ -21,6 +21,7 @@ register_shutdown_function('sendOutput');
 /*check balance is a decimal*/
 
 $new_balance = floatval($_POST['balance']);
+
 $user_id = $_SESSION['logged_user_id'];
 $pepper = $_SESSION['pepper'];
 

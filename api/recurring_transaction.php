@@ -103,16 +103,13 @@ if ($_POST['method'] === 'create') {
 	
 	for ($i=0; $i < $occurences; $i++) { 
 		if ($repeat_type==1){
-
 			$unformatted_insert_date = get_monthly_inc_date($start_date,$repeat,$i);
 			$insert_date = $unformatted_insert_date->format('Y-m-d');
 		}
 
 		if ($repeat_type==2){
-
 			$unformatted_insert_date = get_day_inc_date($start_date,$repeat,$i);
 			$insert_date = $unformatted_insert_date->format('Y-m-d');
-			
 		}
 
 
