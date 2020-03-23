@@ -105,7 +105,7 @@ if ($result->num_rows === 1) {
 		$inserted_start_dt = date("Y/m/d H:i:s", strtotime("now"));
 		$inserted_expire_dt = date("Y/m/d H:i:s", strtotime("+60 minutes"));
 
-		$todays_date = $date("Y-m-d",strtotime("now"));
+		$todays_date = date("Y-m-d",strtotime("now"));
 
 		$user_agent = '';
 		$ip_address = '';

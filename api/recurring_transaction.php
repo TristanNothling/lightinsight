@@ -99,7 +99,6 @@ if ($_POST['method'] === 'create') {
 	if (empty($occurences)  || $occurences == 0 || $occurences>50) {
 		$occurences = 50; /*just make 50 for now*/
 	}
-
 	
 	for ($i=0; $i < $occurences; $i++) { 
 		if ($repeat_type==1){
